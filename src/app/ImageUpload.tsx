@@ -152,7 +152,7 @@ export default function ImageUpload() {
         >
           {previewUrl ? (
             <div className="w-full flex flex-col items-center gap-3">
-              <Image
+              <img
                 src={previewUrl}
                 alt={file?.name || 'Selected image'}
                 className="max-h-64 rounded-lg object-contain border border-muted"

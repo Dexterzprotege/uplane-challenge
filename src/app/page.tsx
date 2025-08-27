@@ -20,7 +20,7 @@ export default function Home() {
           className="relative flex flex-col gap-4 items-center justify-center px-4"
         >
           <div className="text-3xl flex items-center space-x-2">
-            <Image src="/logo_icon.png" alt="Uplane Logo" className="w-12 h-12" />
+            <Image src="/logo_icon.png" alt="Uplane Logo" className="w-12 h-12" width={12} height={12} />
             <h1 className="text-4xl font-bold text-gray-900">uplane</h1>
           </div>
           <div className="font-extralight text-base md:text-3xl dark:text-neutral-200">

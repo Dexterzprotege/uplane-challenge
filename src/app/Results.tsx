@@ -1,7 +1,6 @@
 'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 
 type ResultsPageProps = {
   originalUrl: string;
@@ -14,7 +13,7 @@ function ResultsPage({ originalUrl, resultUrl, onBack }: ResultsPageProps) {
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const handleDownload = () => {
-    const img = new Image();
+    const img = new window.Image();
     img.crossOrigin = 'anonymous';
     img.src = resultUrl;
     img.onload = () => {
@@ -99,7 +98,7 @@ function ResultsPage({ originalUrl, resultUrl, onBack }: ResultsPageProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="border rounded-xl p-4 bg-muted/30">
           <p className="text-sm font-medium mb-2">Original</p>
-          <Image
+          <img
             src={originalUrl}
             alt="Original upload"
             className="w-full h-auto rounded-lg object-contain"
@@ -116,7 +115,7 @@ function ResultsPage({ originalUrl, resultUrl, onBack }: ResultsPageProps) {
               Download
             </button>
           </div>
-          <Image
+          <img
             src={resultUrl}
             alt="Processed image"
             className="w-full h-auto rounded-lg object-contain transform"
