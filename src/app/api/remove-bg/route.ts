@@ -4,6 +4,9 @@ import { put } from '@vercel/blob';
 import { v4 as uuid } from 'uuid';
 import sharp from 'sharp';
 
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   const apiKey = process.env.NEXT_PUBLIC_API_KEY;
 
