@@ -1,5 +1,7 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
 
 type ResultsPageProps = {
   originalUrl: string;
@@ -8,6 +10,9 @@ type ResultsPageProps = {
 };
 
 function ResultsPage({ originalUrl, resultUrl, onBack }: ResultsPageProps) {
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
   const handleDownload = () => {
     const img = new Image();
     img.crossOrigin = 'anonymous';
@@ -19,10 +24,6 @@ function ResultsPage({ originalUrl, resultUrl, onBack }: ResultsPageProps) {
 
       canvas.width = img.width;
       canvas.height = img.height;
-
-      // Flip the canvas context horizontally
-      ctx.translate(canvas.width, 0);
-      ctx.scale(-1, 1);
 
       // Draw the image
       ctx.drawImage(img, 0, 0);
@@ -46,24 +47,59 @@ function ResultsPage({ originalUrl, resultUrl, onBack }: ResultsPageProps) {
     };
   };
 
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    setDeleteError(null);
+    try {
+      const res = await fetch(
+        `/api/delete?url=${encodeURIComponent(resultUrl)}`,
+        {
+          method: 'DELETE'
+        }
+      );
+      if (!res.ok) {
+        throw new Error(await res.text());
+      }
+      if (onBack) onBack(); // return to upload page
+    } catch (err) {
+      console.error('Delete error:', err);
+      setDeleteError('Failed to delete image. Please try again.');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <div className="max-w-5xl mx-auto mt-10 p-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-semibold">Results</h2>
-        {onBack && (
+        <div className="flex gap-3">
+          {onBack && (
+            <button
+              onClick={onBack}
+              className="text-sm px-3 py-2 rounded-md border border-muted-foreground/30 hover:bg-muted"
+            >
+              Back
+            </button>
+          )}
           <button
-            onClick={onBack}
-            className="text-sm px-3 py-2 rounded-md border border-muted-foreground/30 hover:bg-muted"
+            onClick={handleDelete}
+            disabled={isDeleting}
+            className="text-sm px-3 py-2 rounded-md border border-red-500/40 text-red-600 hover:bg-red-50 disabled:opacity-50"
           >
-            Back
+            {isDeleting ? 'Deleting...' : 'Delete'}
           </button>
-        )}
+        </div>
       </div>
+
+      {deleteError && (
+        <p className="text-sm text-red-500 mb-4">{deleteError}</p>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="border rounded-xl p-4 bg-muted/30">
           <p className="text-sm font-medium mb-2">Original</p>
-          <img
+          <Image
             src={originalUrl}
             alt="Original upload"
             className="w-full h-auto rounded-lg object-contain"
@@ -80,11 +116,23 @@ function ResultsPage({ originalUrl, resultUrl, onBack }: ResultsPageProps) {
               Download
             </button>
           </div>
-          <img
+          <Image
             src={resultUrl}
             alt="Processed image"
-            className="w-full h-auto rounded-lg object-contain transform scale-x-[-1]"
+            className="w-full h-auto rounded-lg object-contain transform"
           />
+          <p className="mt-2 text-xs text-gray-500 break-all">
+            Hosted at:{' '}
+            
+            <Link
+              href={resultUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline"
+            >
+              {resultUrl}
+            </Link>
+          </p>
         </div>
       </div>
     </div>
