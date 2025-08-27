@@ -1,5 +1,4 @@
-'use client'
-
+'use client';
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -7,22 +6,22 @@ import { UploadCloud, Image as ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { LoaderThree } from '@/components/ui/loader';
 import ResultsPage from './Results';
+import Image from 'next/image';
 
 const allowedTypes = ['image/png', 'image/jpeg'];
 const MAX_FILE_SIZE_MB = 8;
 
 async function uploadImage(file: File) {
   const formData = new FormData();
-  formData.append("image_file", file);
+  formData.append('image_file', file);
 
-  const res = await fetch("/api/remove-bg", {
-    method: "POST",
-    body: formData,
+  const res = await fetch('/api/remove-bg', {
+    method: 'POST',
+    body: formData
   });
 
-  if (!res.ok) throw new Error("Failed to remove background");
-  const blob = await res.blob();
-  const url = URL.createObjectURL(blob);
+  if (!res.ok) throw new Error('Failed to remove background');
+  const { url } = await res.json();
   return url;
 }
 
@@ -33,18 +32,18 @@ export default function ImageUpload() {
   const [success, setSuccess] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<string>("");
+  const [result, setResult] = useState<string>('');
 
   useEffect(() => {
     return () => {
       if (previewUrl) URL.revokeObjectURL(previewUrl);
-    }
+    };
   }, [previewUrl]);
 
   useEffect(() => {
     return () => {
       if (result) URL.revokeObjectURL(result);
-    }
+    };
   }, [result]);
 
   const validateAndSetFile = (selected: File | undefined | null) => {
@@ -55,7 +54,7 @@ export default function ImageUpload() {
       setPreviewUrl(null);
       setError('Only PNG or JPG images are allowed.');
       setSuccess(false);
-      setResult("");
+      setResult('');
       return;
     }
 
@@ -65,7 +64,7 @@ export default function ImageUpload() {
       setPreviewUrl(null);
       setError(`Image must be <= ${MAX_FILE_SIZE_MB}MB.`);
       setSuccess(false);
-      setResult("");
+      setResult('');
       return;
     }
 
@@ -77,7 +76,7 @@ export default function ImageUpload() {
     });
     setError(null);
     setSuccess(false);
-    setResult("");
+    setResult('');
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -103,7 +102,7 @@ export default function ImageUpload() {
       console.error('Upload error:', err);
       setError('Something went wrong. Please try again.');
       setSuccess(false);
-      setResult("");
+      setResult('');
     } finally {
       setIsLoading(false);
     }
@@ -137,7 +136,9 @@ export default function ImageUpload() {
       <CardContent className="p-8 space-y-6">
         <div className="space-y-1 text-center">
           <h2 className="text-2xl font-bold tracking-tight">Upload an Image</h2>
-          <p className="text-sm text-muted-foreground">PNG or JPG formats only</p>
+          <p className="text-sm text-muted-foreground">
+            PNG or JPG formats only
+          </p>
         </div>
 
         <div
@@ -160,7 +161,9 @@ export default function ImageUpload() {
                 <ImageIcon className="w-4 h-4" />
                 <span className="truncate max-w-[80%]">{file?.name}</span>
               </div>
-              <p className="text-xs text-muted-foreground">Click or drop another image to replace</p>
+              <p className="text-xs text-muted-foreground">
+                Click or drop another image to replace
+              </p>
             </div>
           ) : (
             <div className="text-center space-y-2">

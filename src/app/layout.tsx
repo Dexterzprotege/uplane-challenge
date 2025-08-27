@@ -1,15 +1,15 @@
-import type { Metadata } from "next";
-import { sfPro, inter } from "./fonts";
-import "./globals.css";
-import { cn } from "@/lib/utils";
+import type { Metadata } from 'next';
+import { sfPro, inter } from './fonts';
+import './globals.css';
+import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
-  title: "Uplane",
-  description: "Image Background Removal Tool",
+  title: 'Uplane',
+  description: 'Image Background Removal Tool'
 };
 
 export default function RootLayout({
-  children,
+  children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
@@ -18,9 +18,7 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/logo_icon.png" />
       </head>
-      <body className={cn(sfPro.variable, inter)}>
-        {children}
-      </body>
+      <body className={cn(sfPro.variable, inter)}>{children}</body>
     </html>
   );
 }
