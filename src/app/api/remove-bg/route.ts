@@ -22,7 +22,7 @@ export async function GET() {
   return NextResponse.json({ ok: true }, { headers: corsHeaders });
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   const apiKey = process.env.NEXT_PUBLIC_API_KEY;
 
   if (!apiKey) {
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     const filename = `${uuid()}-flipped.png`;
     const { url } = await put(filename, flippedBuffer, {
       access: 'public',
-      token: process.env.BLOB_READ_WRITE_TOKEN
+      token: process.env.NEXT_PUBLIC_BLOB_READ_WRITE_TOKEN
     });
 
     return NextResponse.json({ url }, { headers: corsHeaders });
